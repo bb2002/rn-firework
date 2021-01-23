@@ -19,7 +19,7 @@ const beacon = handleActions({
         const beaconName = action.payload.name
         if(beaconName.startsWith("safe_")) {
             // 본 업체 비콘임을 확인 함.
-            if(state.accuracy < action.payload.accuracy) {
+            if(state.accuracy > action.payload.accuracy || !state.isBeaconDetected) {
                 // 더 가까운 비콘을 탐색 함.
                 return {
                     accuracy: action.payload.accuracy,
@@ -29,6 +29,16 @@ const beacon = handleActions({
                     isBeaconDetected: true
                 }
             } else {
+                if(state.uuid == action.payload.uuid) {
+                    // 현재 비콘 상태 업데이트
+                    return {
+                        ...state,
+                        accuracy: action.payload.accuracy,
+                        major: action.payload.major,
+                        minor: action.payload.minor
+                    }
+                }
+
                 return state
             }
         } else {
@@ -36,7 +46,15 @@ const beacon = handleActions({
             return state
         }
     },
-    [BEACON_NO_DETECTED]: (state) => state
+    [BEACON_NO_DETECTED]: (state, { payload }) => {
+        if(payload.beacon.uuid === state.uuid) {
+            // 현재 가장 가까웠던 비콘이 사라진 경우
+            return initialState
+        } else {
+            // 알 수 없는 비콘이 사라진 경우
+            return state
+        }
+    }
 }, initialState)
 
 export default beacon

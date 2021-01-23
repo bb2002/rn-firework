@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import FireWebView from '../../components/common/FireWebView';
 
-const UserGuide = () => {
+const SearchStatus = () => {
     return (
         <SafeAreaView style={Styles.container}>
             <FireWebView targetUrl="https://www.daum.net" style={Styles.container}/>
@@ -16,4 +16,4 @@ const Styles = StyleSheet.create({
     }
 })
 
-export default UserGuide;
+export default SearchStatus;

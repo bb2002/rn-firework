@@ -22,12 +22,18 @@ const MenuList = ({ titles, icons, eventHandlers, length }) => {
                         const menuItems = []
 
                         for(let i = 0; i < length; ++i) {
+                            let bigSize = false
+                            if(length - 1 == i && length % 2 == 1) {
+                                bigSize = true
+                            }
+
                             menuItems.push(<MenuItem 
                                 title={titles[i]}
                                 icon={icons[i]}
                                 onPress={eventHandlers[i]}
                                 color={backgroundColors[i % backgroundColors.length]}
-                                key={i} />)
+                                key={i}
+                                bigSizeMode={bigSize} />)
                         }
 
                         return menuItems

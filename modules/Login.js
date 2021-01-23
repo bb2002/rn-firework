@@ -7,8 +7,10 @@ import { takeLatest } from "redux-saga/effects"
 export const ADMIN_LOGIN_PASSWORD = "admin.login.password"
 const ADMIN_LOGIN_PASSWORD_SUCCESS = "admin.login.password_SUCCESS"
 const ADMIN_LOGIN_PASSWORD_FAILED = "admin.login.password_FAILED"
+export const ADMIN_LOGIN_RESET = "admin.login.reset"
 
 export const adminLoginPassword = createAction(ADMIN_LOGIN_PASSWORD, user => user)
+export const resetAdminLogin = createAction(ADMIN_LOGIN_RESET)
 
 const adminLoginPasswordSaga = createRequestSaga(ADMIN_LOGIN_PASSWORD, adminLoginPasswordClient)
 export function* adminLoginSaga() {
@@ -27,8 +29,9 @@ const adminLogin = handleActions({
     }),
     [ADMIN_LOGIN_PASSWORD_FAILED]: (state, action) => ({
         token: "",
-        error: action.payload.error
-    })
+        error: action.payload.response
+    }),
+    [ADMIN_LOGIN_RESET]: () => initialState
 }, initialState)
 
 export default adminLogin

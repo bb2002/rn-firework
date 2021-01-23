@@ -1,12 +1,14 @@
 import React from 'react';
 import { 
-    Image, 
     SafeAreaView, 
     StyleSheet, 
+    View
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import MenuList from '../../components/menu/MenuList';
 import { escHelperCallRoom, escHelperMapView, escHelperSendLocation, screenOfAdmin } from '../../modules/ScreenMode';
+import FireWebView from "../../components/common/FireWebView"
+import { HttpClientConfig } from '../../libraries/Config';
 
 const Menu = ({ navigation }) => {
     const dispatch = useDispatch()
@@ -46,7 +48,10 @@ const Menu = ({ navigation }) => {
 
     return (
         <SafeAreaView style={Styles.container}>
-            <Image source={require("../../assets/images/background/test_menu_title.png")} />
+            <View style={Styles.buildingInfoView}>
+                <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/safe_no_info`} />
+            </View>
+
             
             <MenuList titles={menuTitles} icons={menuIcons} eventHandlers={menuHandler} length={8}/>
         </SafeAreaView>
@@ -57,7 +62,9 @@ const Styles = StyleSheet.create({
     container: {
         flex: 1
     },
-   
+    buildingInfoView: {
+        height: 240
+    }
 })
 
 export default Menu;

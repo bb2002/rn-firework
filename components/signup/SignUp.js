@@ -74,7 +74,7 @@ const SignUp = ({ navigation }) => {
                     onValueChange={(itemValue, itemIndex) => setUser({ ...user, disability: itemValue })}>
                     <Picker.Item label="장애 없음" value="no_disa" />
                     <Picker.Item label="시각 장애" value="eye_disa" />
-                    <Picker.Item label="청각 장애" value="ear_disa" />
+                    <Picker.Item label="기타 장애" value="etc_disa" />
                 </Picker>
             </View>
         </KeyboardAvoidingView>

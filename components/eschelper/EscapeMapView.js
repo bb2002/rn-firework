@@ -1,16 +1,31 @@
 import React from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
+import FireWebView from '../common/FireWebView';
 
 
-const EscapeMapView = ({ moveToCallRoom }) => {
+const EscapeMapView = ({ moveToCallRoom, beacon }) => {
     return (
         <SafeAreaView style={Styles.container}>
-            <ScrollView horizontal={true} style={Styles.imageContainer}>
-                <Image source={require("../../assets/images/background/test_map_sample.jpeg")} style={Styles.image}/>
-            </ScrollView>
 
-            <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
+            {
+                beacon.isBeaconDetected && (
+                    <>
+                    <ScrollView horizontal={true} style={Styles.imageContainer}>
+                    <Image source={require("../../assets/images/background/test_map_sample.jpeg")} style={Styles.image}/>
+                    </ScrollView>
+
+                    <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
+                    </>
+                )
+            }
+
+            {
+                !beacon.isBeaconDetected && (
+                    <FireWebView targetUrl={`/safe_no_map`} attachRootURL={true} />
+                )
+            }
+            
         </SafeAreaView>
     );
 };

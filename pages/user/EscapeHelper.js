@@ -4,24 +4,29 @@ import CallRoom from '../../components/eschelper/CallRoom';
 import EscapeMapView from "../../components/eschelper/EscapeMapView"
 import SendMyLocation from '../../components/eschelper/SendMyLocation';
 
-const EscapeHelper = ({ screen, moveToCallRoom, toggleSendLocation }) => {
+const EscapeHelper = ({ screen, moveToCallRoom, toggleSendLocation, beacon, sendMyLocation, sendLocation }) => {
     return (
         <SafeAreaView style={Styles.container}>
             {
                 screen === "mapview" && (
-                    <EscapeMapView moveToCallRoom={moveToCallRoom} />
+                    <EscapeMapView moveToCallRoom={moveToCallRoom} beacon={beacon} />
                 )
             }
 
             {
                 screen === "callroom" && (
-                    <CallRoom />
+                    <CallRoom beacon={beacon} />
                 )
             }
 
             {
                 screen === "sendlocation" && (
-                    <SendMyLocation moveToCallRoom={moveToCallRoom} toggleSendLocation={toggleSendLocation}/>
+                    <SendMyLocation 
+                        moveToCallRoom={moveToCallRoom} 
+                        toggleSendLocation={toggleSendLocation} 
+                        beacon={beacon} 
+                        sendMyLocation={sendMyLocation} 
+                        sendLocation={sendLocation} />
                 )
             }
            

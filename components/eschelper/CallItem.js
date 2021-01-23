@@ -3,15 +3,20 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 
 const CallItem = ({ roomName, tel }) => {
+    const call = () => {
+        var SendIntentAndroid = require("react-native-send-intent");
+        SendIntentAndroid.sendPhoneCall(tel)
+    }
+
     return (
         <View style={Styles.wrapper}>
             <View style={Styles.container}>
                 <View style={Styles.containerVert}>
-                    <Text style={Styles.roomName}>관리실</Text>
-                    <Text style={Styles.telView}>010-1234-5678</Text>
+                    <Text style={Styles.roomName}>{roomName}</Text>
+                    <Text style={Styles.telView}>{tel}</Text>
                 </View>
 
-                <Button icon={{name: "phone", size: 24, color: "black" }} buttonStyle={Styles.telButton}/>
+                <Button icon={{name: "phone", size: 24, color: "black" }} buttonStyle={Styles.telButton} onPress={call} />
                 
             </View>
             <View style={Styles.hr} />

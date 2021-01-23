@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { ButtonGroup, Input, Button } from 'react-native-elements';
 import Icon from "react-native-vector-icons/FontAwesome"
+import { HttpClientConfig } from '../../libraries/Config';
 import { ADMIN_LOGIN_PASSWORD } from '../../modules/Login';
 
 const Login = ({ gotoUserMode, login, loading }) => {
@@ -19,10 +20,10 @@ const Login = ({ gotoUserMode, login, loading }) => {
                 gotoUserMode()
                 break
             case 1:
-                SendIntentAndroid.openChromeIntent("https://www.google.com")
+                SendIntentAndroid.openChromeIntent(`${HttpClientConfig.WEB_SERVER_ADDRESS}/register`)
                 break
             case 2:
-                SendIntentAndroid.openChromeIntent("https://www.google.com")
+                SendIntentAndroid.openChromeIntent(`${HttpClientConfig.WEB_SERVER_ADDRESS}/forget_pw`)
                 break
         }
     }
@@ -41,7 +42,8 @@ const Login = ({ gotoUserMode, login, loading }) => {
                 label="비밀번호 입력"
                 leftIcon={{ type: 'font-awesome', name: 'lock', size: 18 }}
                 style={Styles.inputStyle}
-                onChangeText={value => setForm({ ...form, username: value })}
+                secureTextEntry={true}
+                onChangeText={value => setForm({ ...form, password: value })}
                 />
             <Button
                 icon={<Icon name="sign-in" color="white" size={15} />}

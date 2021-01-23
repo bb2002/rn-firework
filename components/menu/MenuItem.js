@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Image, Text, TouchableOpacity } from 'react-native';
 
-const MenuItem = ({ title, icon, onPress, color }) => {
+const MenuItem = ({ title, icon, onPress, color, bigSizeMode }) => {
     return (
-        <TouchableOpacity style={{ ...Styles.menuItem, backgroundColor: color }} onPress={onPress}>
+        <TouchableOpacity style={{ ...Styles.menuItem, backgroundColor: color, width: bigSizeMode ? Dimensions.get("window").width : Dimensions.get("window").width / 2 }} onPress={onPress}>
             <Image source={icon} style={Styles.icon}/>
             <Text style={Styles.title}>{title}</Text>
         </TouchableOpacity>
@@ -12,7 +12,6 @@ const MenuItem = ({ title, icon, onPress, color }) => {
 
 const Styles = StyleSheet.create({
     menuItem: {
-        width: Dimensions.get("window").width / 2,
         height: Dimensions.get("window").width / 2,
         justifyContent: "center",
         alignItems: "center"

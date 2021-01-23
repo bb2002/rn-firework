@@ -1,11 +1,11 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import FireWebView from '../../components/common/FireWebView';
 
 const SearchMap = () => {
     return (
         <SafeAreaView style={Styles.container}>
-            <FireWebView targetUrl="https://www.daum.net" style={Styles.container}/>
+            <FireWebView targetUrl="/search" style={Styles.container} attachRootURL={true} />
         </SafeAreaView>
     );
 };
