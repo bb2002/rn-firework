@@ -6,9 +6,9 @@ import Kontakt from "react-native-kontaktio"
 import { useSelector, useDispatch } from 'react-redux';
 import 'react-native-gesture-handler'
 import Intro from './pages/Intro'
-import Menu from './pages/user/Menu';
 import EscapeHelperCont from "./container/EscapeHelper.cont"
 import { newBeaconDetected, noBeaconDetected } from './modules/Beacon';
+import { loadBuildingMainPage, noBeaconMainPage } from "./modules/BuildingMainPage"
 import UserManual from './pages/user/UserManual';
 import AddMap from './pages/user/AddMap';
 import SearchMap from './pages/user/SearchMap';
@@ -21,9 +21,10 @@ import Building from './pages/admin/Building';
 import AddMapAdmin from './pages/admin/AddMapAdmin';
 import SearchMapAdmin from './pages/admin/SearchMapAdmin';
 import Manual from './pages/admin/Manual';
+import MenuCont from "./container/Menu.cont"
 
 
-const {connect, startScanning, configure} = Kontakt
+const {connect, startScanning} = Kontakt
 const Stack = createStackNavigator();
 
 // React navigation 관련 처리
@@ -32,7 +33,6 @@ const optionsOfNoHeader = {
 }
 
 const beaconSetup = async () => {
-	
 	await connect()
 	await startScanning()
 	console.log(">> Start Scanning...")
@@ -41,8 +41,8 @@ const beaconSetup = async () => {
 const App = () => {
 	const dispatch = useDispatch()
 
-	const { screenMode } = useSelector(({ screenMode }) => ({
-		screenMode
+	const { screenMode, beacon } = useSelector(({ screenMode, beacon }) => ({
+		screenMode, beacon
 	}))
 
 	useEffect(() => {
@@ -51,7 +51,6 @@ const App = () => {
 			beacons.forEach(beacon => {
 				// 감지된 비콘 목록 중 가장 가까운 것을 선정하여 등록
 				dispatch(newBeaconDetected(beacon))
-
 			});
 		})
 
@@ -59,6 +58,16 @@ const App = () => {
 			dispatch(noBeaconDetected(disappearBeacon))
 		})
 	}, [])
+
+	useEffect(() => {
+		if(beacon.uuid) {
+			// 비콘이 있는 경우
+			dispatch(loadBuildingMainPage(beacon.uuid))
+		} else {
+			// 비콘이 없는 경우
+			dispatch(noBeaconMainPage())
+		}
+	}, [beacon.uuid])
 
 	return (
 		<>
@@ -72,7 +81,7 @@ const App = () => {
 				screenMode.screen === "user" && (
 					<NavigationContainer>
 						<Stack.Navigator initialRouteName="Menu">
-							<Stack.Screen name="Menu" component={Menu} options={optionsOfNoHeader}/>
+							<Stack.Screen name="Menu" component={MenuCont} options={optionsOfNoHeader}/>
 							<Stack.Screen name="EscapeHelper" component={EscapeHelperCont} options={{ headerTitle: "피난 도우미" }}/>
 							<Stack.Screen name="SignUp" component={SignUpPage} options={{ headerTitle: "사용자 등록" }}/>
 							<Stack.Screen name="AddMap" component={AddMap} options={{ headerTitle: "피난 안내도 등록" }}/>

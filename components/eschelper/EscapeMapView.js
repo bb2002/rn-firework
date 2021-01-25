@@ -1,20 +1,30 @@
-import React from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import { Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import FireWebView from '../common/FireWebView';
 
 
-const EscapeMapView = ({ moveToCallRoom, beacon }) => {
+const EscapeMapView = ({ moveToCallRoom, beacon, mapView }) => {
     return (
         <SafeAreaView style={Styles.container}>
 
             {
                 beacon.isBeaconDetected && (
                     <>
-                    <ScrollView horizontal={true} style={Styles.imageContainer}>
-                    <Image source={require("../../assets/images/background/test_map_sample.jpeg")} style={Styles.image}/>
-                    </ScrollView>
-
+                    {
+                        mapView.postCode === "" && (
+                            // 맵이 없음.
+                            <FireWebView targetUrl={mapView.mapURL} />
+                        )
+                    }
+                    {
+                        mapView.postCode !== "" && (
+                            <ScrollView horizontal={true} style={Styles.imageContainer}>
+                                <Image source={{ uri: mapView.mapURL }} style={Styles.image}/>
+                            </ScrollView>
+                        )
+                    }
+        
                     <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
                     </>
                 )
@@ -22,7 +32,7 @@ const EscapeMapView = ({ moveToCallRoom, beacon }) => {
 
             {
                 !beacon.isBeaconDetected && (
-                    <FireWebView targetUrl={`/safe_no_map`} attachRootURL={true} />
+                    <FireWebView targetUrl={`/safe_no_beacon`} attachRootURL={true} />
                 )
             }
             
@@ -40,6 +50,7 @@ const Styles = StyleSheet.create({
     },
     image: {
         height: "100%",
+        width: 600,
         resizeMode: "contain"
     },
     callButton: {

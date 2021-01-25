@@ -1,21 +1,31 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import CallRoom from '../../components/eschelper/CallRoom';
 import EscapeMapView from "../../components/eschelper/EscapeMapView"
 import SendMyLocation from '../../components/eschelper/SendMyLocation';
+import { loadEscapeMap } from '../../modules/MapView';
+import { loadTelephoneList } from '../../modules/Telephone';
 
-const EscapeHelper = ({ screen, moveToCallRoom, toggleSendLocation, beacon, sendMyLocation, sendLocation }) => {
+const EscapeHelper = ({ screen, moveToCallRoom, beacon, mapView, telephone }) => {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(loadEscapeMap(beacon.uuid))        // 맵 로드
+        dispatch(loadTelephoneList(beacon.uuid))    // 전화번호 목록 로드
+    }, [beacon.uuid])
+
     return (
         <SafeAreaView style={Styles.container}>
             {
                 screen === "mapview" && (
-                    <EscapeMapView moveToCallRoom={moveToCallRoom} beacon={beacon} />
+                    <EscapeMapView moveToCallRoom={moveToCallRoom} beacon={beacon} mapView={mapView} />
                 )
             }
 
             {
                 screen === "callroom" && (
-                    <CallRoom beacon={beacon} />
+                    <CallRoom beacon={beacon} telephone={telephone} />
                 )
             }
 
@@ -23,10 +33,8 @@ const EscapeHelper = ({ screen, moveToCallRoom, toggleSendLocation, beacon, send
                 screen === "sendlocation" && (
                     <SendMyLocation 
                         moveToCallRoom={moveToCallRoom} 
-                        toggleSendLocation={toggleSendLocation} 
                         beacon={beacon} 
-                        sendMyLocation={sendMyLocation} 
-                        sendLocation={sendLocation} />
+                        mapView={mapView} />
                 )
             }
            

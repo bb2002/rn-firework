@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Image, StyleSheet, Text, PermissionsAndroid, Alert } from 'react-native';
+import { View, Image, StyleSheet, Text, PermissionsAndroid, Alert, ImageBackground } from 'react-native';
 import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 import { screenOfUser } from '../modules/ScreenMode';
 import { useDispatch } from 'react-redux';
@@ -81,25 +81,26 @@ const Intro = ({ beaconSetup }) => {
     }, [])
 
     return (
-        <SafeAreaView style={Styles.container}>
-            <Image source={require("../assets/images/icons/app_icon.png")} style={Styles.icon} />
+        <ImageBackground source={require("../assets/images/background/intro.png")} style={Styles.background}>
             <Text style={Styles.statusText}>{statusMessage}</Text>
-        </SafeAreaView>
+        </ImageBackground>
     );
 };
 
 const Styles = StyleSheet.create({
-    container: {
+    background: {
         flex: 1,
-        justifyContent: "center",
+        resizeMode: "cover",
+        justifyContent: "flex-end",
         alignItems: "center"
     },
-    icon: {
-        width: 120,
-        height: 120
-    },
     statusText: {
-        marginTop: 32
+        marginBottom: 32,
+        color: "white",
+        backgroundColor: "#00000088",
+        width: "100%",
+        textAlign: "center",
+        paddingVertical: 8
     }
 })
 

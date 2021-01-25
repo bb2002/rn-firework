@@ -4,6 +4,8 @@ import WebView from 'react-native-webview';
 import { Button, Input } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import { readUser, saveUser } from '../../libraries/SignUpStorage';
+import { HttpClientConfig } from "../../libraries/Config"
+import FireWebView from '../common/FireWebView';
 
 const SignUp = ({ navigation }) => {
     const [user, setUser] = useState({
@@ -54,9 +56,8 @@ const SignUp = ({ navigation }) => {
         <>
         <KeyboardAvoidingView style={Styles.container} behavior="position" enabled>
             <View style={Styles.termsView}>
-                <WebView 
-                    automaticallyAdjustContentInsets={false}
-                    source={{ uri: "https://www.daum.net" }} />
+                <FireWebView 
+                    targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/reg_info`} />
             </View>
             
             <Input

@@ -1,53 +1,63 @@
-import React, { useEffect } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, ScrollView, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, ScrollView, Alert, ToastAndroid } from 'react-native';
 import { Button } from 'react-native-elements';
+import { sendMyLocationClient } from '../../libraries/HttpClient';
 import { readUser } from '../../libraries/SignUpStorage';
 import FireWebView from '../common/FireWebView';
 
 
-const SendMyLocation = ({ moveToCallRoom, toggleSendLocation, beacon, sendMyLocation, sendLocation }) => {
+const SendMyLocation = ({ moveToCallRoom, beacon, mapView }) => {
+    const [isSending, setIsSending] = useState(false)
+
     useEffect(() => {
-        if(sendMyLocation.isSending) {
+        if(isSending) {
             Alert.alert("전송 중...", "위치 변동에 따라 지속적으로 위치를 보내고 있습니다.", [
                 {
                     text: "전송 중지",
                     onPress: () => {
-                        toggleSendLocation()
+                        setIsSending(false)
                     }
-                },
-                {
-                    text: "확인"
                 }
             ])
         }
-    }, [sendMyLocation.isSending])
+    }, [isSending, setIsSending])
 
     useEffect(() => {
-        if(beacon.isBeaconDetected) {
+        if(beacon.isBeaconDetected && isSending) {
             readUser()
                 .then((user) => {
-                    console.log("SEND LOCATION")
-                    sendLocation({
+                    sendMyLocationClient({
                         uuid: beacon.uuid,
                         phoneNumber: user.tel,
                         status: user.disability
                     })
+                    .catch(ex => {
+                        ToastAndroid.show("위치 정보 전송에 실패했습니다.", ToastAndroid.SHORT)
+                    })
                 })
-
-            
         }
-    }, [beacon.uuid])
+    }, [beacon.uuid, isSending])
 
     return (
         <>
             {
                 beacon.isBeaconDetected && (
                 <SafeAreaView style={Styles.container}>
-                    <ScrollView horizontal={true} style={Styles.imageContainer}>
-                        <Image source={require("../../assets/images/background/test_map_sample.jpeg")} style={Styles.image}/>
-                    </ScrollView>
+                    {
+                        mapView.postCode === "" && (
+                            // 맵이 없음.
+                            <FireWebView targetUrl={mapView.mapURL} />
+                        )
+                    }
+                    {
+                        mapView.postCode !== "" && (
+                            <ScrollView horizontal={true} style={Styles.imageContainer}>
+                                <Image source={{ uri: mapView.mapURL }} style={Styles.image}/>
+                            </ScrollView>
+                        )
+                    }
 
-                    <Button icon={{name: "send", size: 15, color: "white" }} title={sendMyLocation.isSending ? "전송 중지" : "전송 시작"} buttonStyle={Styles.sendButton} onPress={toggleSendLocation}/>
+                    <Button icon={{name: "send", size: 15, color: "white" }} title={isSending ? "전송 중지" : "전송 시작"} buttonStyle={Styles.sendButton} onPress={() => setIsSending(true)}/>
                     <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
                 </SafeAreaView>
                 )
@@ -73,6 +83,7 @@ const Styles = StyleSheet.create({
     },
     image: {
         height: "100%",
+        width: 600,
         resizeMode: "contain"
     },
     callButton: {

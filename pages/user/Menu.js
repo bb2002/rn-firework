@@ -10,7 +10,7 @@ import { escHelperCallRoom, escHelperMapView, escHelperSendLocation, screenOfAdm
 import FireWebView from "../../components/common/FireWebView"
 import { HttpClientConfig } from '../../libraries/Config';
 
-const Menu = ({ navigation }) => {
+const Menu = ({ navigation, mainPage }) => {
     const dispatch = useDispatch()
 
     const menuTitles = [
@@ -49,7 +49,7 @@ const Menu = ({ navigation }) => {
     return (
         <SafeAreaView style={Styles.container}>
             <View style={Styles.buildingInfoView}>
-                <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/safe_no_info`} />
+                <FireWebView targetUrl={mainPage} />
             </View>
 
             
