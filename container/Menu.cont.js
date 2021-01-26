@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import Menu from '../pages/user/Menu';
 
 const MenuCont = ({ navigation }) => {
-    const { buildingMainPage } = useSelector(({ buildingMainPage }) => ({
-        buildingMainPage
+    const { buildingNumber } = useSelector(({ buildingNumber }) => ({
+        buildingNumber
     }))
 
     return (
-        <Menu navigation={navigation} mainPage={buildingMainPage.url} />
+        <Menu navigation={navigation} buildingNumber={buildingNumber.buildingNumber} />
     );
 };
 

@@ -10,7 +10,7 @@ import { escHelperCallRoom, escHelperMapView, escHelperSendLocation, screenOfAdm
 import FireWebView from "../../components/common/FireWebView"
 import { HttpClientConfig } from '../../libraries/Config';
 
-const Menu = ({ navigation, mainPage }) => {
+const Menu = ({ navigation, buildingNumber }) => {
     const dispatch = useDispatch()
 
     const menuTitles = [
@@ -49,7 +49,16 @@ const Menu = ({ navigation, mainPage }) => {
     return (
         <SafeAreaView style={Styles.container}>
             <View style={Styles.buildingInfoView}>
-                <FireWebView targetUrl={mainPage} />
+                {
+                    buildingNumber === "" && (
+                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/safe_no_beacon`} />
+                    )
+                }
+                {
+                    buildingNumber !== "" && (
+                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/building_management/image/${buildingNumber}.html`} />
+                    )
+                }
             </View>
 
             

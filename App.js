@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import 'react-native-gesture-handler'
 import Intro from './pages/Intro'
 import EscapeHelperCont from "./container/EscapeHelper.cont"
-import { newBeaconDetected, noBeaconDetected } from './modules/Beacon';
-import { loadBuildingMainPage, noBeaconMainPage } from "./modules/BuildingMainPage"
+import { beaconAppeared, beaconUpdated, beaconDisappeared } from './modules/Beacon';
+import { loadBuildingNumber, resetBuildingNumber } from './modules/BuildingNumber';
 import UserManual from './pages/user/UserManual';
 import AddMap from './pages/user/AddMap';
 import SearchMap from './pages/user/SearchMap';
@@ -24,7 +24,7 @@ import Manual from './pages/admin/Manual';
 import MenuCont from "./container/Menu.cont"
 
 
-const {connect, startScanning} = Kontakt
+const { connect, startScanning } = Kontakt
 const Stack = createStackNavigator();
 
 // React navigation 관련 처리
@@ -33,6 +33,7 @@ const optionsOfNoHeader = {
 }
 
 const beaconSetup = async () => {
+
 	await connect()
 	await startScanning()
 	console.log(">> Start Scanning...")
@@ -46,26 +47,30 @@ const App = () => {
 	}))
 
 	useEffect(() => {
-		// Beacon 업데이터 실행
-		DeviceEventEmitter.addListener("beaconsDidUpdate", ({ beacons }) => {
-			beacons.forEach(beacon => {
-				// 감지된 비콘 목록 중 가장 가까운 것을 선정하여 등록
-				dispatch(newBeaconDetected(beacon))
-			});
+		DeviceEventEmitter.addListener("beaconDidAppear", ({ beacon }) => {
+			dispatch(beaconAppeared(beacon))
 		})
 
-		DeviceEventEmitter.addListener("beaconDidDisappear", (disappearBeacon) => {
-			dispatch(noBeaconDetected(disappearBeacon))
+		// Beacon 업데이터 실행
+		DeviceEventEmitter.addListener("beaconsDidUpdate", ({ beacons }) => {
+			dispatch(beaconUpdated(beacons))
+		})
+
+		DeviceEventEmitter.addListener("beaconDidDisappear", (beacon) => {
+			dispatch(beaconDisappeared(beacon))
 		})
 	}, [])
 
 	useEffect(() => {
+		/**
+		 * 빌딩 넘버를 불러옵니다.
+		 */
 		if(beacon.uuid) {
 			// 비콘이 있는 경우
-			dispatch(loadBuildingMainPage(beacon.uuid))
+			dispatch(loadBuildingNumber(beacon.uuid))
 		} else {
 			// 비콘이 없는 경우
-			dispatch(noBeaconMainPage())
+			dispatch(resetBuildingNumber())
 		}
 	}, [beacon.uuid])
 

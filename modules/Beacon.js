@@ -1,62 +1,92 @@
 import { createAction, handleActions } from "redux-actions"
+import produce from "immer"
 
-const NEW_BEACON_DETECTED = "beacon.foundnew"
-const BEACON_NO_DETECTED = "beacon.empty"
+const BEACON_APPEARED       = "beacon.appeared"
+const BEACON_UPDATED        = "beacon.updated"
+const BEACON_DISAPPEARED    = "beacon.disappeared"
 
-export const newBeaconDetected = createAction(NEW_BEACON_DETECTED, data => data)
-export const noBeaconDetected = createAction(BEACON_NO_DETECTED)
+export const beaconAppeared = createAction(BEACON_APPEARED, beacon => beacon)
+export const beaconUpdated = createAction(BEACON_UPDATED, beacons => beacons)
+export const beaconDisappeared = createAction(BEACON_DISAPPEARED, beacon => beacon)
 
 const initialState = {
-    accuracy: 0.0,
+    detectedBeacons: [],
     uuid: "",
+    uuidOriginal: "",
     major: 0,
     minor: 0,
     isBeaconDetected: false
 }
 
 const beacon = handleActions({
-    [NEW_BEACON_DETECTED]: (state, action) => {
-        const beaconName = action.payload.name
-        const uuid = action.payload.uuid.replace(/\-/g, "").slice(0, 24)
-        if(beaconName.startsWith("safe_")) {
-            // 본 업체 비콘임을 확인 함.
-            if(state.accuracy > action.payload.accuracy || !state.isBeaconDetected) {
-                // 더 가까운 비콘을 탐색 함.
-                return {
-                    accuracy: action.payload.accuracy,
-                    uuid: uuid,
-                    major: action.payload.major,
-                    minor: action.payload.minor,
-                    isBeaconDetected: true
+    [BEACON_APPEARED]: (state, { payload }) => produce(state, draft => {
+        if(payload.name.startsWith("safe_")) {
+            for(let i = 0; i < state.detectedBeacons.length; ++i) {
+                if(draft.detectedBeacons[i].uuid === payload.uuid) {
+                    return state
                 }
-            } else {
-                if(state.uuid == uuid) {
-                    // 현재 비콘 상태 업데이트
-                    return {
-                        ...state,
-                        accuracy: action.payload.accuracy,
-                        major: action.payload.major,
-                        minor: action.payload.minor
-                    }
-                }
-
-                return state
             }
-        } else {
-            // 우리 비콘이 아닌 경우
-            return state
+
+            draft.detectedBeacons.push(payload)
+            draft.isBeaconDetected = true
+
+            draft = updateNearBeacon(draft)
         }
-    },
-    [BEACON_NO_DETECTED]: (state, { payload }) => {
-        const uuid = payload.beacon.uuid.replace(/\-/g, "").slice(0, 24)
-        if(uuid === state.uuid) {
-            // 현재 가장 가까웠던 비콘이 사라진 경우
-            return initialState
-        } else {
-            // 알 수 없는 비콘이 사라진 경우
-            return state
+    }),
+    [BEACON_UPDATED]: (state, { payload }) => produce(state, draft => {
+        /**
+         * 새로 업데이트 된 비콘을 업데이트 합니다.
+         */
+        for(let j = 0; j < payload.length; ++j) {
+            const beacon = payload[j]
+
+            for(let i = 0; i < draft.detectedBeacons.length; ++i) {
+                const dBeaconUUID = draft.detectedBeacons[i].uuid
+
+                if(beacon.uuid === dBeaconUUID) {
+                    // 비콘 값 업데이트
+                    draft.detectedBeacons[i] = beacon
+                }
+            }
         }
-    }
+
+        draft = updateNearBeacon(draft)
+    }),
+    [BEACON_DISAPPEARED]: (state, { payload }) => produce(state, draft => {
+        payload = payload.beacon
+
+        const searched = draft.detectedBeacons.findIndex(beacon => beacon.uuid === payload.uuid)
+        if(searched > -1) {
+            draft.detectedBeacons.splice(searched, 1)
+            draft = updateNearBeacon(draft)
+        }
+    })
 }, initialState)
+
+function updateNearBeacon(draft) {
+    if(draft.detectedBeacons.length === 0) {
+        draft.uuid = ""
+        draft.major = 0
+        draft.minor = 0
+        draft.uuidOriginal = ""
+        draft.isBeaconDetected = false
+        return draft
+    }
+
+    /**
+     * 거리순으로 비콘을 정렬합니다.
+     */
+    draft.detectedBeacons.sort((lts, rts) => {
+        return lts.accuracy - rts.accuracy
+    })
+
+    // 첫번째 비콘이 가장 가까운 비콘 입니다.
+    draft.uuid = draft.detectedBeacons[0].uuid.replace(/\-/g, "").slice(0, 24)
+    draft.uuidOriginal = draft.detectedBeacons[0].uuid
+    draft.major = draft.detectedBeacons[0].major
+    draft.minor = draft.detectedBeacons[0].minor
+
+    return draft
+}
 
 export default beacon

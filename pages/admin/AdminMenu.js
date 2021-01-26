@@ -4,14 +4,20 @@ import {
     Image, 
     SafeAreaView, 
     StyleSheet, 
+    View
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MenuList from '../../components/menu/MenuList';
 import { resetAdminLogin } from '../../modules/Login';
 import { screenOfUser } from '../../modules/ScreenMode';
+import FireWebView from "../../components/common/FireWebView"
+import { HttpClientConfig } from '../../libraries/Config';
 
 const AdminMenu = ({ navigation }) => {
     const dispatch = useDispatch()
+    const { adminLogin } = useSelector(({ adminLogin }) => ({
+        adminLogin
+    }))
 
     const menuTitles = [
         "상황 검색",
@@ -60,8 +66,19 @@ const AdminMenu = ({ navigation }) => {
 
     return (
         <SafeAreaView style={Styles.container}>
-            <Image source={require("../../assets/images/background/test_menu_title.png")} />
-            
+            <View style={Styles.buildingInfoView}>
+                {
+                    adminLogin.adminBuildingNumber === "" && (
+                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/safe_no_beacon`} />
+                    )
+                }
+                {
+                    adminLogin.adminBuildingNumber !== "" && (
+                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/building_management/image/${adminLogin.adminBuildingNumber}.html`} />
+                    )
+                }
+            </View>
+
             <MenuList titles={menuTitles} icons={menuIcons} eventHandlers={menuHandler} length={7}/>
         </SafeAreaView>
     );
@@ -71,7 +88,9 @@ const Styles = StyleSheet.create({
     container: {
         flex: 1
     },
-   
+    buildingInfoView: {
+        height: 240
+    }
 })
 
 export default AdminMenu;

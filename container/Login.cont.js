@@ -26,10 +26,6 @@ const LoginCont = ({ navigation }) => {
 
     useEffect(() => {
 
-        // DEBUG!!!!!!!!
-        //navigation.replace("Menu")
-        //return
-
         if(adminLogin.error) {
             switch(adminLogin.error.status) {
                 case 404: {
@@ -53,7 +49,13 @@ const LoginCont = ({ navigation }) => {
             }
             dispatch(resetAdminLogin())
         } else if(adminLogin.token) {
-            navigation.navigate("Menu")
+            if(adminLogin.adminBuildingNumber === "0") {
+                // Super
+                Alert.alert("허용되지 않음", "슈퍼 관리자 계정은 앱에서 로그인 할 수 없습니다.\n웹 서비스를 이용해주세요.")
+                dispatch(resetAdminLogin())
+            } else {
+                navigation.navigate("Menu")
+            }
         }
     }, [adminLogin])
 
