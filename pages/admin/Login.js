@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import { HttpClientConfig } from '../../libraries/Config';
 import { ADMIN_LOGIN_PASSWORD } from '../../modules/Login';
 
-const Login = ({ gotoUserMode, login, loading }) => {
+const Login = ({ gotoUserMode, login, loading, navigation }) => {
     
     const [form, setForm] = useState({
         username: "",
@@ -20,6 +20,7 @@ const Login = ({ gotoUserMode, login, loading }) => {
                 gotoUserMode()
                 break
             case 1:
+                //navigation.navigate("AdminRegister")
                 SendIntentAndroid.openChromeIntent(`${HttpClientConfig.WEB_SERVER_ADDRESS}/register`)
                 break
             case 2:

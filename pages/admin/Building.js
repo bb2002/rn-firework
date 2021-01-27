@@ -10,9 +10,11 @@ const Building = () => {
     }))
 
     return (
-        <SafeAreaView style={Styles.container}>
-            <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/history/${adminLogin.adminBuildingNumber}`} style={Styles.container}/>
-        </SafeAreaView>
+        <FireWebView 
+            targetUrl={`/building_management/history/${adminLogin.adminBuildingNumber}.html`}
+            notFoundURL={`/building_management/history/no_building_page.html`}
+            attachRootURL={true}
+            style={Styles.container} />
     );
 };
 

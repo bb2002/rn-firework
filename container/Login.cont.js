@@ -51,7 +51,7 @@ const LoginCont = ({ navigation }) => {
         } else if(adminLogin.token) {
             if(adminLogin.adminBuildingNumber === "0") {
                 // Super
-                Alert.alert("허용되지 않음", "슈퍼 관리자 계정은 앱에서 로그인 할 수 없습니다.\n웹 서비스를 이용해주세요.")
+                Alert.alert("허용되지 않음", "관리자 계정만 앱에서 로그인 할 수 있습니다.\n운영 콘솔을 이용해주세요.")
                 dispatch(resetAdminLogin())
             } else {
                 navigation.navigate("Menu")
@@ -60,7 +60,7 @@ const LoginCont = ({ navigation }) => {
     }, [adminLogin])
 
     return (
-        <Login gotoUserMode={gotoUserMode} login={login} loading={loading} adminLogin={adminLogin} />
+        <Login gotoUserMode={gotoUserMode} login={login} loading={loading} adminLogin={adminLogin} navigation={navigation} />
     );
 };
 

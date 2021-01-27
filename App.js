@@ -22,6 +22,7 @@ import AddMapAdmin from './pages/admin/AddMapAdmin';
 import SearchMapAdmin from './pages/admin/SearchMapAdmin';
 import Manual from './pages/admin/Manual';
 import MenuCont from "./container/Menu.cont"
+import AdminRegister from './pages/admin/AdminRegister';
 
 
 const { connect, startScanning } = Kontakt
@@ -102,6 +103,7 @@ const App = () => {
 					<NavigationContainer>
 						<Stack.Navigator initialRouteName="Login">
 							<Stack.Screen name="Login" component={LoginCont} options={{ headerTitle: "관리자 모드" }}/>
+							<Stack.Screen name="AdminRegister" component={AdminRegister} options={{ headerTitle: "관리자 가입" }}/>
 							<Stack.Screen name="Menu" component={AdminMenu} options={optionsOfNoHeader}/>
 							<Stack.Screen name="SearchStatus" component={SearchStatus} options={{ headerTitle: "상황 검색" }}/>
 							<Stack.Screen name="ControlRoom" component={ControlRoom} options={{ headerTitle: "방재실/수신반 관리" }}/>

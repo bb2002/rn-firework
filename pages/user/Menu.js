@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import MenuList from '../../components/menu/MenuList';
 import { escHelperCallRoom, escHelperMapView, escHelperSendLocation, screenOfAdmin } from '../../modules/ScreenMode';
 import FireWebView from "../../components/common/FireWebView"
-import { HttpClientConfig } from '../../libraries/Config';
 
 const Menu = ({ navigation, buildingNumber }) => {
     const dispatch = useDispatch()
@@ -51,12 +50,17 @@ const Menu = ({ navigation, buildingNumber }) => {
             <View style={Styles.buildingInfoView}>
                 {
                     buildingNumber === "" && (
-                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/safe_no_beacon`} />
+                        <FireWebView 
+                            targetUrl={`/safe_no_beacon`} 
+                            attachRootURL={true} />
                     )
                 }
                 {
                     buildingNumber !== "" && (
-                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/building_management/image/${buildingNumber}.html`} />
+                        <FireWebView 
+                            targetUrl={`/building_management/image/${buildingNumber}.html`} 
+                            notFoundURL="/building_management/image/no_building_page.html"
+                            attachRootURL={true} />
                     )
                 }
             </View>

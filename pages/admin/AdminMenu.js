@@ -74,7 +74,10 @@ const AdminMenu = ({ navigation }) => {
                 }
                 {
                     adminLogin.adminBuildingNumber !== "" && (
-                        <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/building_management/image/${adminLogin.adminBuildingNumber}.html`} />
+                        <FireWebView 
+                            targetUrl={`/building_management/image/${adminLogin.adminBuildingNumber}.html`} 
+                            notFoundURL="/building_management/image/no_building_page.html"
+                            attachRootURL={true} />
                     )
                 }
             </View>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { useSelector } from 'react-redux';
-import { HttpClientConfig } from '../../libraries/Config';
 import FireWebView from '../../components/common/FireWebView';
 
 const ControlRoom = () => {
@@ -11,7 +10,11 @@ const ControlRoom = () => {
 
     return (
         <SafeAreaView style={Styles.container}>
-            <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/room/${adminLogin.adminBuildingNumber}`} style={Styles.container}/>
+            <FireWebView 
+                targetUrl={`/building_management/room/${adminLogin.adminBuildingNumber}.html`}
+                notFoundURL={`/building_management/room/no_building_page.html`}
+                attachRootURL={true}
+                style={Styles.container} />
         </SafeAreaView>
     );
 };
