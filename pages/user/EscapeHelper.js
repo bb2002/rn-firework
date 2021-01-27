@@ -7,7 +7,7 @@ import SendMyLocation from '../../components/eschelper/SendMyLocation';
 import { loadEscapeMap } from '../../modules/MapView';
 import { loadTelephoneList } from '../../modules/Telephone';
 
-const EscapeHelper = ({ screen, moveToCallRoom, beacon, mapView, telephone }) => {
+const EscapeHelper = ({ screen, moveToCallRoom, beacon, mapView, telephone, navigation }) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -34,7 +34,8 @@ const EscapeHelper = ({ screen, moveToCallRoom, beacon, mapView, telephone }) =>
                     <SendMyLocation 
                         moveToCallRoom={moveToCallRoom} 
                         beacon={beacon} 
-                        mapView={mapView} />
+                        mapView={mapView}
+                        navigation={navigation} />
                 )
             }
            

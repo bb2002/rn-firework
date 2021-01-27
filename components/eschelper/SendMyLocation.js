@@ -6,7 +6,7 @@ import { readUser } from '../../libraries/SignUpStorage';
 import FireWebView from '../common/FireWebView';
 
 
-const SendMyLocation = ({ moveToCallRoom, beacon, mapView }) => {
+const SendMyLocation = ({ moveToCallRoom, beacon, mapView, navigation }) => {
     const [isSending, setIsSending] = useState(false)
 
     useEffect(() => {
@@ -17,10 +17,29 @@ const SendMyLocation = ({ moveToCallRoom, beacon, mapView }) => {
                     onPress: () => {
                         setIsSending(false)
                     }
+                },
+                {
+                    text: "닫기"
                 }
             ])
         }
     }, [isSending, setIsSending])
+
+    useEffect(() => {
+        readUser()
+                .then((user) => {
+                    if(!user) {
+                        Alert.alert("이용자 등록 필요", "등록되지 않은 사용자 입니다.\n메뉴의 사용자 등록에서 먼저 사용자 등록을 해주세요.",[
+                            {
+                                text: "확인",
+                                onPress: () => {
+                                    navigation.goBack()
+                                }
+                            }
+                        ])
+                    }
+                })
+    }, [])
 
     useEffect(() => {
         if(beacon.isBeaconDetected && isSending) {
@@ -57,7 +76,7 @@ const SendMyLocation = ({ moveToCallRoom, beacon, mapView }) => {
                         )
                     }
 
-                    <Button icon={{name: "send", size: 15, color: "white" }} title={isSending ? "전송 중지" : "전송 시작"} buttonStyle={Styles.sendButton} onPress={() => setIsSending(true)}/>
+                    <Button icon={{name: "send", size: 15, color: "white" }} title={isSending ? "전송 중지" : "전송 시작"} buttonStyle={Styles.sendButton} onPress={() => setIsSending(!isSending)}/>
                     <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
                 </SafeAreaView>
                 )

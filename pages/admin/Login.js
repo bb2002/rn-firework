@@ -4,6 +4,7 @@ import { ButtonGroup, Input, Button } from 'react-native-elements';
 import Icon from "react-native-vector-icons/FontAwesome"
 import { HttpClientConfig } from '../../libraries/Config';
 import { ADMIN_LOGIN_PASSWORD } from '../../modules/Login';
+import * as WebBrowser from 'expo-web-browser';
 
 const Login = ({ gotoUserMode, login, loading, navigation }) => {
     
@@ -13,18 +14,21 @@ const Login = ({ gotoUserMode, login, loading, navigation }) => {
     })
 
     const onPressButtonGroup = (value) => {
-        const SendIntentAndroid = require('react-native-send-intent');
-
         switch(value) {
             case 0:
                 gotoUserMode()
                 break
             case 1:
-                //navigation.navigate("AdminRegister")
-                SendIntentAndroid.openChromeIntent(`${HttpClientConfig.WEB_SERVER_ADDRESS}/register`)
+                async function openRegister() {
+                    await WebBrowser.openBrowserAsync(`${HttpClientConfig.WEB_SERVER_ADDRESS}/register`)
+                }
+                openRegister()
                 break
             case 2:
-                SendIntentAndroid.openChromeIntent(`${HttpClientConfig.WEB_SERVER_ADDRESS}/forget_pw`)
+                async function openPw() {
+                    await WebBrowser.openBrowserAsync(`${HttpClientConfig.WEB_SERVER_ADDRESS}/forget_pw`)
+                }
+                openPw()
                 break
         }
     }

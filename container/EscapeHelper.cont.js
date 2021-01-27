@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { escHelperCallRoom } from '../modules/ScreenMode';
 import EscapeHelper from "../pages/user/EscapeHelper"
 
-const EscapeHelperCont = () => {
+const EscapeHelperCont = ({ navigation }) => {
     const dispatch = useDispatch()
 
     const { screenMode, beacon, mapView, telephone } = useSelector(({ screenMode, beacon, mapView, telephone }) => ({
@@ -20,7 +20,8 @@ const EscapeHelperCont = () => {
             moveToCallRoom={moveToCallRoom}
             beacon={beacon}
             mapView={mapView}
-            telephone={telephone} />
+            telephone={telephone}
+            navigation={navigation} />
     );
 };
 
