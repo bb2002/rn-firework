@@ -6,7 +6,11 @@ import { HttpClientConfig } from '../../libraries/Config';
 const UserManual = () => {
     return (
         <SafeAreaView style={Styles.container}>
-            <Image source={{uri: `${HttpClientConfig.WEB_SERVER_ADDRESS}/user_manual.png`}} style={Styles.image}/>
+            <FireWebView 
+                targetUrl="/user_manual"
+                attachRootURL={true}
+                style={Styles.image}
+            />
         </SafeAreaView>
     );
 };

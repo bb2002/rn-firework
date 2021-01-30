@@ -1,4 +1,4 @@
-package com.firework.generated;
+package kr.saintdev.firework.generated;
 
 import java.util.Arrays;
 import java.util.List;

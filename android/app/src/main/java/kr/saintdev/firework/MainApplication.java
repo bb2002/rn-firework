@@ -1,6 +1,6 @@
-package com.firework;
+package kr.saintdev.firework;
 
-import com.firework.generated.BasePackageList;
+import kr.saintdev.firework.generated.BasePackageList;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
@@ -78,7 +78,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("com.firework.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("kr.saintdev.firework.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);

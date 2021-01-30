@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, ScrollView, Alert, ToastAndroid } from 'react-native';
 import { Button } from 'react-native-elements';
-import { sendMyLocationClient } from '../../libraries/HttpClient';
+import { sendMyLocationClient, stopSendMyLocation } from '../../libraries/HttpClient';
 import { readUser } from '../../libraries/SignUpStorage';
 import FireWebView from '../common/FireWebView';
 
@@ -22,10 +22,28 @@ const SendMyLocation = ({ moveToCallRoom, beacon, mapView, navigation }) => {
                     text: "닫기"
                 }
             ])
+        } else {
+            async function fetch() {
+                try {
+                    const user = await readUser()
+                    await stopSendMyLocation(user.tel)
+                } catch(ex) {  }
+            }
+
+            fetch()
         }
+
+        return fetch
     }, [isSending, setIsSending])
 
     useEffect(() => {
+        async function fetch() {
+            try {
+                const user = await readUser()
+                await stopSendMyLocation(user.tel)
+            } catch(ex) {  }
+        }
+
         readUser()
                 .then((user) => {
                     if(!user) {
@@ -39,6 +57,8 @@ const SendMyLocation = ({ moveToCallRoom, beacon, mapView, navigation }) => {
                         ])
                     }
                 })
+
+        return fetch
     }, [])
 
     useEffect(() => {
@@ -70,13 +90,14 @@ const SendMyLocation = ({ moveToCallRoom, beacon, mapView, navigation }) => {
                     }
                     {
                         mapView.postCode !== "" && (
-                            <ScrollView horizontal={true} style={Styles.imageContainer}>
-                                <Image source={{ uri: mapView.mapURL }} style={Styles.image}/>
-                            </ScrollView>
+                            <FireWebView 
+                                targetUrl={mapView.mapURL} 
+                                style={Styles.image} 
+                                attachRootURL={false} />
                         )
                     }
 
-                    <Button icon={{name: "send", size: 15, color: "white" }} title={isSending ? "전송 중지" : "전송 시작"} buttonStyle={Styles.sendButton} onPress={() => setIsSending(!isSending)}/>
+                    <Button icon={{name: isSending ? "local-post-office" : "send", size: 15, color: "white" }} title={isSending ? "전송 중..." : "전송 시작"} buttonStyle={Styles.sendButton} onPress={() => setIsSending(!isSending)}/>
                     <Button icon={{name: "phone", size: 15, color: "white" }} title="긴급 전화 하기" buttonStyle={Styles.callButton} onPress={moveToCallRoom}/>
                 </SafeAreaView>
                 )

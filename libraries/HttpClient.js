@@ -14,3 +14,5 @@ export const getEscapeMapClient = (uuid) => axios.get(`${HttpClientConfig.ROOT_S
 export const getTelephoneListClient = (uuid) => axios.post(`${HttpClientConfig.ROOT_SERVER_ADDRESS}/user/managerlist`, {uuid})
 
 export const getBuildingNumberClient = (uuid) => axios.get(`${HttpClientConfig.ROOT_SERVER_ADDRESS}/admin/building_number/${uuid}`)
+
+export const stopSendMyLocation = (phoneNumber) => axios.post(`${HttpClientConfig.ROOT_SERVER_ADDRESS}/user/stop_situation`, { phoneNumber })

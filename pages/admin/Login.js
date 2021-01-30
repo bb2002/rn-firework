@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
-import { ButtonGroup, Input, Button } from 'react-native-elements';
+import { ButtonGroup, Input, Button, CheckBox } from 'react-native-elements';
 import Icon from "react-native-vector-icons/FontAwesome"
 import { HttpClientConfig } from '../../libraries/Config';
-import { ADMIN_LOGIN_PASSWORD } from '../../modules/Login';
+import { adminAutoLogin, ADMIN_LOGIN_PASSWORD } from '../../modules/Login';
 import * as WebBrowser from 'expo-web-browser';
+import { readToken } from '../../libraries/AutoLoginStorage';
 
-const Login = ({ gotoUserMode, login, loading, navigation }) => {
-    
+const Login = ({ gotoUserMode, login, loading, autoLogin }) => {
     const [form, setForm] = useState({
         username: "",
-        password: ""
+        password: "",
+        autoLogin: false
     })
 
     const onPressButtonGroup = (value) => {
@@ -33,6 +34,15 @@ const Login = ({ gotoUserMode, login, loading, navigation }) => {
         }
     }
 
+    useEffect(() => {
+        readToken()
+            .then(value => {
+                if(value != null) {
+                    autoLogin(value)
+                }
+            })
+    }, [])
+
     return (
         <SafeAreaView style={Styles.container}>
              <Input
@@ -50,6 +60,12 @@ const Login = ({ gotoUserMode, login, loading, navigation }) => {
                 secureTextEntry={true}
                 onChangeText={value => setForm({ ...form, password: value })}
                 />
+            <CheckBox
+                title="자동 로그인을 사용할까요?"
+                checked={form.autoLogin}
+                onPress={() => setForm({ ...form, autoLogin: !form.autoLogin })}
+                containerStyle={Styles.checkbox}
+                textStyle={Styles.checkboxText} />
             <Button
                 icon={<Icon name="sign-in" color="white" size={15} />}
                 title={loading[ADMIN_LOGIN_PASSWORD] ? "처리 중..." : "로그인"}
@@ -75,7 +91,16 @@ const Styles = StyleSheet.create({
     },
     buttonSize: {
         alignSelf: "stretch",
-        marginHorizontal: 8
+        marginHorizontal: 10
+    },
+    checkbox: {
+        alignSelf: "stretch",
+        marginHorizontal: 8,
+        backgroundColor: "#00000000",
+        borderWidth: 0
+    },
+    checkboxText: {
+        fontWeight: "normal"
     }
 })
 

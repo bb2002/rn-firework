@@ -1,25 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { HttpClientConfig } from '../../libraries/Config';
 import {
-    View, Text, StyleSheet
+    View, Text, StyleSheet, BackHandler
 } from "react-native"
 import axios from 'axios';
 
-const FireWebView = ({ targetUrl, attachRootURL, notFoundURL }) => {
+const FireWebView = ({ targetUrl, attachRootURL, notFoundURL, useGoBack }) => {
     const [code, setCode] = useState(-1)
+    const [canGoBack, setCanGoBack] = useState(false)
+    const webView = useRef()
 
     useEffect(() => {
         // HTTP 요청이 404 인지 확인해야합니다.
         // WebView 가 response 를 주지 않아서 답답합니다.
+        const instance = axios.create()
+        instance.defaults.timeout = 3000
+
         axios.get(attachRootURL ? HttpClientConfig.WEB_SERVER_ADDRESS + targetUrl : targetUrl)
             .then(response => {
                 setCode(response.status)
             })
             .catch(ex => {
-                setCode(ex.response.status)
+                try {
+                    setCode(ex.response.status)
+                } catch(ex) {
+                    setCode(600)
+                }
             })
-    }, [targetUrl])
+
+        if(useGoBack) {
+            const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+                if(webView != null && canGoBack) {
+                    webView.current.goBack()
+                    return true
+                } else {
+                    return false
+                }
+            })
+    
+            return () => {
+                backHandler.remove()
+            }
+        }
+    }, [targetUrl, webView, canGoBack])
     
     return (
         <>
@@ -35,14 +59,26 @@ const FireWebView = ({ targetUrl, attachRootURL, notFoundURL }) => {
                         return (
                         <WebView 
                             source={{ uri: attachRootURL ? HttpClientConfig.WEB_SERVER_ADDRESS + targetUrl : targetUrl }}
-                            style={{ opacity: 0.99 }} />
+                            style={{ opacity: 0.99 }}
+                            ref={webView} 
+                            onNavigationStateChange={(navState) => { setCanGoBack(navState.canGoBack) }} />
                         )
                     } else if(code == 404) {
                         return (
                         <WebView
                             source={{ uri: attachRootURL ? HttpClientConfig.WEB_SERVER_ADDRESS + notFoundURL : notFoundURL }}
-                            style={{ opacity: 0.99 }} />
+                            style={{ opacity: 0.99 }}
+                            ref={webView}
+                            onNavigationStateChange={(navState) => { setCanGoBack(navState.canGoBack) }} />
                         )
+                    } else if(code == 600) {
+                        return (
+                            <View style={Styles.loadingContainer}>
+                                <Text style={Styles.text}>인터넷 연결 오류</Text>
+                                <Text style={Styles.text}>장치가 인터넷에 연결되어있지 않습니다.</Text>
+                                <Text style={Styles.text}>나중에 다시 시도해주세요.</Text>
+                            </View>
+                            )
                     } else {
                         return (
                         <View style={Styles.loadingContainer}>
@@ -58,6 +94,12 @@ const FireWebView = ({ targetUrl, attachRootURL, notFoundURL }) => {
         
     );
 };
+
+FireWebView.defaultProps = {
+    attachRootURL: false,
+    notFoundURL: `${HttpClientConfig.WEB_SERVER_ADDRESS}/404`,
+    useGoBack: false
+}
 
 const Styles = StyleSheet.create({
     loadingContainer: {

@@ -6,7 +6,7 @@ import FireWebView from '../../components/common/FireWebView';
 const SearchMapAdmin = () => {
     return (
         <SafeAreaView style={Styles.container}>
-            <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/search`} style={Styles.container}/>
+            <FireWebView targetUrl={`${HttpClientConfig.WEB_SERVER_ADDRESS}/search_admin`} style={Styles.container}/>
         </SafeAreaView>
     );
 };

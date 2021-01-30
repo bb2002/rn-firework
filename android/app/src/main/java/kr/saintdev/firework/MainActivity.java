@@ -1,4 +1,4 @@
-package com.firework;
+package kr.saintdev.firework;
 
 import com.facebook.react.ReactActivity;
 

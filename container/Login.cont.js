@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { adminLoginPassword, resetAdminLogin } from '../modules/Login';
+import { adminLoginPassword, resetAdminLogin, adminAutoLogin } from '../modules/Login';
 import { screenOfUser } from '../modules/ScreenMode';
 import Login from '../pages/admin/Login';
 
@@ -54,13 +54,28 @@ const LoginCont = ({ navigation }) => {
                 Alert.alert("허용되지 않음", "관리자 계정만 앱에서 로그인 할 수 있습니다.\n운영 콘솔을 이용해주세요.")
                 dispatch(resetAdminLogin())
             } else {
-                navigation.navigate("Menu")
+                openAdminMenu()
             }
         }
     }, [adminLogin])
 
+    const autoLogin = (admin) => {
+        dispatch(adminAutoLogin(admin))
+        openAdminMenu()
+    }
+
+    const openAdminMenu = () => {
+        navigation.navigate("Menu")
+    }
+
     return (
-        <Login gotoUserMode={gotoUserMode} login={login} loading={loading} adminLogin={adminLogin} navigation={navigation} />
+        <Login 
+            gotoUserMode={gotoUserMode} 
+            login={login} 
+            loading={loading} 
+            adminLogin={adminLogin} 
+            navigation={navigation} 
+            autoLogin={autoLogin} />
     );
 };
 

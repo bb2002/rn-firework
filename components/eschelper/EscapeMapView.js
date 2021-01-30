@@ -19,9 +19,10 @@ const EscapeMapView = ({ moveToCallRoom, beacon, mapView }) => {
                     }
                     {
                         mapView.postCode !== "" && (
-                            <ScrollView horizontal={true} style={Styles.imageContainer}>
-                                <Image source={{ uri: mapView.mapURL }} style={Styles.image}/>
-                            </ScrollView>
+                            <FireWebView 
+                                targetUrl={mapView.mapURL} 
+                                style={Styles.image} 
+                                attachRootURL={false} />
                         )
                     }
         
