@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { HttpClientConfig } from '../../libraries/Config';
 import {
-    View, Text, StyleSheet, BackHandler
+    View, Text, StyleSheet, BackHandler, ToastAndroid
 } from "react-native"
 import axios from 'axios';
 
